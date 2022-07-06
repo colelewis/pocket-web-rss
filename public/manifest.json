@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "pocket-web-rss",
+  "name": "pocket-web-rss",
   "icons": [
     {
       "src": "favicon.ico",
