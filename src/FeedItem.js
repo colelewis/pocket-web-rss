@@ -1,8 +1,21 @@
-export const FeedItem = (props) => {
-    return (
-        <>
-            <p>{props.desc}</p>
-            <p>test</p>
-        </>
-    )
+import React, { Component } from 'react';
+
+export default class FeedItem extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+
+        };
+    }
+
+    componentDidMount() {
+        ;
+    }
+
+    render() {
+        return (
+            <>
+            </>
+        );
+    }
 }
