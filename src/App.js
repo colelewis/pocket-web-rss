@@ -9,8 +9,7 @@ export default class App extends Component {
     super(props);
     this.state = {
       feeds: [],
-      sources: ['https://www.state.gov/rss-feed/democracy-human-rights-and-labor/feed/'],
-      feedItems: []
+      sources: ['https://www.state.gov/rss-feed/africa/feed/', 'https://www.state.gov/rss-feed/democracy-human-rights-and-labor/feed/']
     };
   }
 
@@ -24,17 +23,24 @@ export default class App extends Component {
       .then(res => res.text()) // get response text from fetching RSS URL
       .then(contents => new window.DOMParser().parseFromString(contents, "text/xml")) // parse XML from RSS URL into visible format
       .then(data => { // process fetched RSS data
+        this.setState(prevState => ({
+          feeds: prevState.feeds.concat(data)
+        }));
+      })
+      .catch(e => {
+        alert('The source ' + feedURL + ' could not be loaded due to CORS settings.');
         this.setState({
-          feeds: this.state.feeds.concat(data)
-        });
+          sources: this.state.sources.splice(feedURL)
+        })
+        // window.location.reload(); // save for production
       });
   }
 
   render() {
     return (
       <>
-        <p>pocket-web-rss</p>
-        <Feed data={this.state.feeds} />        
+        <Feed data={this.state.feeds} sources={this.state.sources} />
+        {console.log(this.state.feeds)}
       </>
     )
   }
