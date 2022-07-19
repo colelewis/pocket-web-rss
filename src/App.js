@@ -1,47 +1,40 @@
 import './App.css';
-import React, { Component } from 'react';
-// import FeedMenu from './FeedMenu';
-import './bootstrap.min.css'
+import React, { useEffect, useState } from 'react';
+import './bootstrap.min.css';
 import Feed from './Feed';
+import { fetchSources } from './Storage';
 
-export default class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      feeds: [],
-      sources: ['https://www.state.gov/rss-feed/africa/feed/', 'https://www.state.gov/rss-feed/democracy-human-rights-and-labor/feed/']
-    };
-  }
+// export default class App extends Component {
+export default function App() {
 
-  componentDidMount() {
-    // eventually add from localstorage
-    this.state.sources.forEach(source => this.parseRSS(source));
-  }
+  const [feeds, setFeeds] = useState([]);
+  // const [sources, setSources] = useState(fetchSources());
 
-  parseRSS(feedURL) {
-    fetch(feedURL)
-      .then(res => res.text()) // get response text from fetching RSS URL
-      .then(contents => new window.DOMParser().parseFromString(contents, "text/xml")) // parse XML from RSS URL into visible format
-      .then(data => { // process fetched RSS data
-        this.setState(prevState => ({
-          feeds: prevState.feeds.concat(data)
-        }));
+  useEffect( () => {
+    
+    fetchSources().forEach(source => {
+      parseSource(source);
+    })
+  }, []);
+
+  const parseSource = (source) => {
+    fetch(source)
+        .then(res => res.text()) // get response text from fetching RSS URL
+        .then(contents => new window.DOMParser().parseFromString(contents, "text/xml")) // parse XML from RSS URL into visible format
+        .then(data => { // process fetched RSS data
+          setFeeds(feeds => [...feeds, data]);
       })
       .catch(e => {
-        alert('The source ' + feedURL + ' could not be loaded due to CORS settings.');
-        this.setState({
-          sources: this.state.sources.splice(feedURL)
-        })
-        // window.location.reload(); // save for production
+        console.error(e);
+        // setFeeds([]);
       });
   }
 
-  render() {
-    return (
-      <>
-        <Feed data={this.state.feeds} sources={this.state.sources} />
-        {console.log(this.state.feeds)}
-      </>
-    )
-  }
+  return (
+    <>
+    {console.log(feeds)}
+      <Feed clearData={() => setFeeds([])} data={feeds} />
+    </>
+  );
+
 }
