@@ -8,14 +8,26 @@ import { fetchSources } from './Storage';
 export default function App() {
 
   const [feeds, setFeeds] = useState([]);
-  // const [sources, setSources] = useState(fetchSources());
+  const [lsflag, setLSFlag] = useState(0);
 
-  useEffect( () => {
-    
+  useEffect(() => {
+    window.addEventListener('localStorage', () => {
+      updateLS();
+      console.log("change to local storage!");
+    })
     fetchSources().forEach(source => {
       parseSource(source);
     })
   }, []);
+
+  const updateLS = () => {
+    setLSFlag(lsflag + 1);
+    console.log('re-render count: ' + lsflag);
+    setFeeds([]);
+    fetchSources().forEach(source => {
+      parseSource(source);
+    })
+  }
 
   const parseSource = (source) => {
     fetch(source)
@@ -26,13 +38,11 @@ export default function App() {
       })
       .catch(e => {
         console.error(e);
-        // setFeeds([]);
       });
   }
 
   return (
     <>
-    {console.log(feeds)}
       <Feed clearData={() => setFeeds([])} data={feeds} />
     </>
   );

@@ -18,8 +18,12 @@ import DownloadIcon from '@mui/icons-material/Download'
 import GitHubIcon from '@mui/icons-material/GitHub';
 import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 
-import { Modal, Box, Snackbar, Alert, Typography, Button, TextField, Card, CardHeader, CardContent, Container } from '@mui/material';
-import { clearData, addPackage, exportPackages, setPackages, fetchPackages, removePackage } from './Storage';
+import { Modal, Box, Snackbar, Alert, Typography, Button, TextField, Card, CardHeader, CardContent, Container, Collapse } from '@mui/material';
+import { clearData, addPackage, exportPackages, setPackages, fetchPackages, removePackage, fetchSavedItems, removeItem } from './Storage';
+
+const lsEventDispatchWrapper = () => {
+  window.dispatchEvent(new Event('localStorage')); // alert <App> of local storage change
+}
 
 const actions = [
   { icon: <AddIcon />, name: 'Add URL', impulse: 'addURL' },
@@ -60,8 +64,8 @@ export default function FeedMenu(props) {
   const handleCloseSnackbar = () => setOpenSnackbar(false);
 
   const [snackbarMessage, setSnackbarMessage] = useState('');
-
   const [urlInput, setURLInput] = useState('');
+  const [expand, setExpand] = useState(false);
 
   function handleClick(e, imp) {
     e.preventDefault();
@@ -70,10 +74,6 @@ export default function FeedMenu(props) {
     if (imp === 'exportPackages') { exportPackages(); return; } // handle download
     handleOpenModal();
   }
-
-  // function localStorageChangeHandler() {
-  //   props.passAppChangeHandler();
-  // }
 
   function pinwheel() {
     switch (modalAction) {
@@ -98,6 +98,7 @@ export default function FeedMenu(props) {
       .then(contents => new window.DOMParser().parseFromString(contents, "text/xml")) // parse XML from RSS URL into visible format
       .then(data => { // process fetched RSS data
         addPackage(data.querySelector('channel').querySelector('title').textContent, data.querySelector('channel').querySelector('description').textContent, url);
+        window.dispatchEvent(new Event('localStorage')); // alert <App> of local storage change
       });
   }
 
@@ -128,8 +129,6 @@ export default function FeedMenu(props) {
   }
 
   function urlInputValidator(input) {
-    // https://www.state.gov/rss-feed/climate-environment-and-conservation/feed/ works
-    // https://xkcd.com/rss.xml doesn't work
     fetch(input)
       .then(res => res.text())
       .then(contents => new window.DOMParser().parseFromString(contents, "text/xml"))
@@ -140,7 +139,6 @@ export default function FeedMenu(props) {
           handleCloseModal();
           setSnackbarMessage('Source added!');
           handleOpenSnackbar();
-          // localStorageChangeHandler();
         } else {
           alert('Invalid source, please enter valid RSS feed URL.');
           setURLInput('');
@@ -149,6 +147,7 @@ export default function FeedMenu(props) {
         alert('Invalid source, please enter valid RSS feed URL.');
         setURLInput('');
       });
+    
   }
 
   function RSSValidator(input) {
@@ -168,7 +167,6 @@ export default function FeedMenu(props) {
   }
 
   async function importedJSONValidator(fileJSON) {
-
     function isValidURL(input) {
       try {
         const j = new URL(input);
@@ -220,8 +218,9 @@ export default function FeedMenu(props) {
           setPackages(r.result);
           handleCloseModal();
           setSnackbarMessage('Packages imported!');
+          window.dispatchEvent(new Event('localStorage')); // alert <App> of local storage change
           handleOpenSnackbar();
-          // localStorageChangeHandler();
+          //
         } else {
           alert('Invalid packages file, please enter valid packages.json file.');
         }
@@ -247,7 +246,7 @@ export default function FeedMenu(props) {
         {fetchPackages().map(
           x => {
             return (
-              <Card sx={{margin: '3%'}} variant='outlined'>
+              <Card sx={{ margin: '3%' }} variant='outlined'>
                 <CardHeader title={x.title} />
                 <div>
                   <CardContent>
@@ -255,17 +254,17 @@ export default function FeedMenu(props) {
                       <Typography>
                         <a href={x.link}>{x.link}</a>
                       </Typography>
-                      <Typography style={{whiteSpace: 'pre-line'}}>
-                        <div dangerouslySetInnerHTML={{__html: x.description}} />
+                      <Typography style={{ whiteSpace: 'pre-line' }}>
+                        <div dangerouslySetInnerHTML={{ __html: x.description }} />
                       </Typography>
                       <PlaylistRemoveIcon onClick={() => {
-                          removePackage(x.title, x.description, x.link);
-                          setSnackbarMessage('Source removed!');
-                          handleCloseModal();
-                          handleOpenSnackbar();
-                          // localStorageChangeHandler();
+                        removePackage(x.title, x.description, x.link);
+                        setSnackbarMessage('Source removed!');
+                        handleCloseModal();
+                        window.dispatchEvent(new Event('localStorage')); // alert <App> of local storage change
+                        handleOpenSnackbar();
                         }
-                      }/>
+                      } />
                     </Container>
                   </CardContent>
                 </div>
@@ -280,7 +279,35 @@ export default function FeedMenu(props) {
   const listSaved = () => {
     return (
       <Box sx={boxStyle}>
-
+        {fetchSavedItems().map(item => {
+          return (
+            <Card sx={{ margin: '3%' }} variant='outlined' onClick={() => setExpand(!expand)}>
+              <CardHeader title={item.title} />
+              <div>
+              <PlaylistRemoveIcon onClick={() => {
+                        removeItem(item.title, item.description, item.link);
+                        setSnackbarMessage('Item removed!');
+                        handleCloseModal();
+                        handleOpenSnackbar();
+                        }
+                } />
+                <Collapse in={expand} timeout='auto' unmountOnExit>
+                  <CardContent >
+                    <Container sx={{}}>
+                      <Typography style={{ whiteSpace: 'pre-line' }}>
+                        <div dangerouslySetInnerHTML={{ __html: item.description }} />
+                      </Typography>
+                      <Typography style={{ marginTop: '5%' }}>
+                        <a href={item.link}>{item.link}</a>
+                      </Typography>
+                    </Container>
+                  </CardContent>
+                </Collapse>
+              </div>
+            </Card>
+          )
+        }
+        )}
       </Box>
     );
   }
@@ -298,7 +325,7 @@ export default function FeedMenu(props) {
               key={action.name}
               icon={action.icon}
               tooltipTitle={action.name}
-              onClick={(e) => { handleClick(e, action.impulse)}}
+              onClick={(e) => { handleClick(e, action.impulse) }}
             />
           ))}
         </SpeedDial>

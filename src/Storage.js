@@ -74,7 +74,11 @@ export function packageExists(channelTitle, channelDescription, channelLink) {
 }
 
 export function fetchSavedItems() {
-    return JSON.parse(localStorage.getItem('saved'));
+    if (JSON.parse(localStorage.getItem('saved')) === null) {
+        return [];
+    } else {
+        return JSON.parse(localStorage.getItem('saved'));
+    }
 }
 
 export function saveItem(itemTitle, itemDescription, itemLink) {

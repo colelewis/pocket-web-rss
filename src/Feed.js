@@ -19,10 +19,9 @@ export default function Feed(props) {
         }
         for (let k = 0; k < f.length; k++) { // outer loop traverses through feeds passed through props
             for (let j = 0; j < f[k].length; j++) { // traverses through items in the feed selected above
-                finalItems.push(<FeedItem title={f[k][j].querySelector('title').textContent} link={f[k][j].querySelector('link').textContent} description={f[k][j].querySelector('description').textContent} key={j} />);
+                finalItems.push(<FeedItem title={f[k][j].querySelector('title').textContent} link={f[k][j].querySelector('link').textContent} description={f[k][j].querySelector('description').textContent} />);
             }
         }
-        console.log(finalItems);
         return finalItems;
     }
     
@@ -36,7 +35,7 @@ export default function Feed(props) {
                         </div>
                         <div className='col-1'>
                             <div className='position-fixed p-3'>
-                                <FeedMenu clearFeed={() => setFeedItems([])} /*passAppChangeHandler={this.passAppChangeHandler} passClearHandler={this.passClearHandler}*/ />
+                                <FeedMenu clearFeed={() => setFeedItems([])} />
                             </div>
                         </div>
                     </div>
@@ -53,7 +52,7 @@ export default function Feed(props) {
                         </div>
                         <div className='col-1'>
                             <div className='position-fixed m-3'>
-                                <FeedMenu clearFeed={() => setFeedItems([])} /*passAppChangeHandler={this.passAppChangeHandler} passClearHandler={this.passClearHandler}*/ />
+                                <FeedMenu clearFeed={() => setFeedItems([])} />
                             </div>
                         </div>
                     </div>
