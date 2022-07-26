@@ -21,10 +21,6 @@ import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 import { Modal, Box, Snackbar, Alert, Typography, Button, TextField, Card, CardHeader, CardContent, Container, Collapse } from '@mui/material';
 import { clearData, addPackage, exportPackages, setPackages, fetchPackages, removePackage, fetchSavedItems, removeItem } from './Storage';
 
-const lsEventDispatchWrapper = () => {
-  window.dispatchEvent(new Event('localStorage')); // alert <App> of local storage change
-}
-
 const actions = [
   { icon: <AddIcon />, name: 'Add URL', impulse: 'addURL' },
   { icon: <ListAltIcon />, name: 'Sources', impulse: 'handleOpenSources' },
@@ -109,11 +105,13 @@ export default function FeedMenu(props) {
           Made by Cole Lewis
           <br />
           &copy;2022
-          <br />
         </Typography>
         <br />
         <Typography variant='h1'>
           <GitHubIcon onClick={() => window.open('https://github.com/colelewis/pocket-web-rss')} fontSize="90%" style={{ color: '#1ff0d0' }} />
+        </Typography>
+        <Typography variant='h5'>
+          v1.0
         </Typography>
       </Box>
     );

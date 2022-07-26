@@ -2,7 +2,7 @@
   "name": "pocket-web-rss",
   "author": "Cole Lewis",
   "homepage": "https://menthol.cloud/pocket-web-rss",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.9.3",
