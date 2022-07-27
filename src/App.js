@@ -4,7 +4,6 @@ import './bootstrap.min.css';
 import Feed from './Feed';
 import { fetchSources } from './Storage';
 
-// export default class App extends Component {
 export default function App() {
 
   const [feeds, setFeeds] = useState([]);
@@ -28,19 +27,6 @@ export default function App() {
       parseSource(source);
     })
   }
-
-  // const parseSource = (source) => {
-  //   fetch(source)
-  //       .then(res => res.text()) // get response text from fetching RSS URL
-  //       .then(contents => new window.DOMParser().parseFromString(contents, "text/xml")) // parse XML from RSS URL into visible format
-  //       .then(data => { // process fetched RSS data
-  //         console.log(data);
-  //         setFeeds(feeds => [...feeds, data]);
-  //     })
-  //     .catch(e => {
-  //       console.error(e);
-  //     });
-  // }
 
   const parseSource = (source) => {
     fetch('http://localhost:8001/source/' + source)

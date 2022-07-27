@@ -44,8 +44,6 @@ export default function FeedItemMenu(props) { // only prop is url, the FeedItem 
                 open={openSave}
                 autoHideDuration={5000}
                 onClose={handleCloseSave}
-                // message="Item saved!"
-                // anchorOrigin={{vertical: 'bottom', horizontal:'top'}}
             >
                 <Alert onClose={handleCloseSave} severity="success" sx={{ width: '100%' }}>
                     Item saved!
