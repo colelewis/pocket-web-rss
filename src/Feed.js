@@ -30,7 +30,7 @@ export default function Feed(props) {
             <>
                 <div className='container-fluid m-1'>
                     <div className='row'>
-                        <div className='col-10'>
+                        <div className='col'>
                             <Typography variant='h3' className='d-flex justify-content-center mt-5'>Add a feed in the menu!</Typography>
                         </div>
                         <div className='col-1'>
@@ -47,7 +47,7 @@ export default function Feed(props) {
             <>
                 <div className='container-fluid m-1'>
                     <div className='row'>
-                        <div className='col-10'>
+                        <div className='col'>
                             {feedItems}
                         </div>
                         <div className='col-1'>

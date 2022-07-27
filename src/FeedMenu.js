@@ -89,13 +89,16 @@ export default function FeedMenu(props) {
   }
 
   function addPackageWrapper(url) {
-    fetch(url)
-      .then(res => res.text()) // get response text from fetching RSS URL
-      .then(contents => new window.DOMParser().parseFromString(contents, "text/xml")) // parse XML from RSS URL into visible format
-      .then(data => { // process fetched RSS data
-        addPackage(data.querySelector('channel').querySelector('title').textContent, data.querySelector('channel').querySelector('description').textContent, url);
+    fetch('http://localhost:8001/source/' + url)
+    // fetch('https://menthol.cloud/' + source)
+      .then(data => data.json())
+      .then(contents => contents.rawHTML)
+      .then(runner => new window.DOMParser().parseFromString(runner, "text/xml"))
+      .then(result => {
+        addPackage(result.querySelector('channel').querySelector('title').textContent, result.querySelector('channel').querySelector('description').textContent, url);
         window.dispatchEvent(new Event('localStorage')); // alert <App> of local storage change
-      });
+      }
+    );
   }
 
   const about = () => {
@@ -127,25 +130,28 @@ export default function FeedMenu(props) {
   }
 
   function urlInputValidator(input) {
-    fetch(input)
-      .then(res => res.text())
-      .then(contents => new window.DOMParser().parseFromString(contents, "text/xml"))
-      .then(data => {
-        if (data.querySelector('channel') !== null) {
+   
+    fetch('http://localhost:8001/source/' + input)
+      // fetch('https://menthol.cloud/' + source)
+      .then(data => data.json())
+      .then(contents => contents.rawHTML)
+      .then(runner => new window.DOMParser().parseFromString(runner, "text/xml"))
+      .then(result => {
+        console.log(result)
+        if (result.querySelector('channel') !== null) {
           addPackageWrapper(input);
           setURLInput('');
           handleCloseModal();
-          setSnackbarMessage('Source added!');
+          setSnackbarMessage('Source added');
           handleOpenSnackbar();
         } else {
-          alert('Invalid source, please enter valid RSS feed URL.');
+          alert('Invalid source, please enter valid RSS feed URL');
           setURLInput('');
         }
       }).catch(() => {
         alert('Invalid source, please enter valid RSS feed URL.');
         setURLInput('');
       });
-    
   }
 
   function RSSValidator(input) {
@@ -261,7 +267,7 @@ export default function FeedMenu(props) {
                         handleCloseModal();
                         window.dispatchEvent(new Event('localStorage')); // alert <App> of local storage change
                         handleOpenSnackbar();
-                        }
+                      }
                       } />
                     </Container>
                   </CardContent>
@@ -282,12 +288,12 @@ export default function FeedMenu(props) {
             <Card sx={{ margin: '3%' }} variant='outlined' onClick={() => setExpand(!expand)}>
               <CardHeader title={item.title} />
               <div>
-              <PlaylistRemoveIcon onClick={() => {
-                        removeItem(item.title, item.description, item.link);
-                        setSnackbarMessage('Item removed!');
-                        handleCloseModal();
-                        handleOpenSnackbar();
-                        }
+                <PlaylistRemoveIcon onClick={() => {
+                  removeItem(item.title, item.description, item.link);
+                  setSnackbarMessage('Item removed!');
+                  handleCloseModal();
+                  handleOpenSnackbar();
+                }
                 } />
                 <Collapse in={expand} timeout='auto' unmountOnExit>
                   <CardContent >
