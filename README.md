@@ -4,11 +4,12 @@ Basic web RSS reader.
 
 Bootstrapped with [Create React App](https://create-react-app.dev)
 
-Note: not all RSS feeds, even if valid, will work due to CORS restrictions. Future releases will proxy RSS fetch requests to account for this.
+Note: Fetch requests assume an XMLDocument provided by a CORS proxy. Additional configuration may be needed to fit your specific implementation.\
+A compatible CORS proxy can be found [here.](https://github.com/colelewis/pocket-cors-rss-proxy)
 
 ## Demo
 
-Try out some RSS links [here.](https://www.state.gov/rss-feeds/)
+Try out some RSS links [here.](https://www.state.gov/rss-feeds/)\
 Try pocket-web-rss out [here!](https://menthol.cloud/pocket-web-rss)
 
 ## Available Scripts
