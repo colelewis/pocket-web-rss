@@ -10,7 +10,7 @@ A compatible CORS proxy can be found [here.](https://github.com/colelewis/pocket
 ## Demo
 
 Try out some RSS links [here.](https://www.state.gov/rss-feeds/)\
-Try pocket-web-rss out [here!](https://menthol.cloud/pocket-web-rss)
+Try pocket-web-rss out [here!](https://menthol.cloud/pocket-web-rss) Note, this demonstration runs version 1.0 which does not include CORS proxy functionality due to lack of reliable CORS proxy server hosting at this time. This may caue otherwise valid RSS links to be listed as 'invalid sources'. 
 
 ## Available Scripts
 
